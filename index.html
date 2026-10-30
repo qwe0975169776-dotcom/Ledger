@@ -297,6 +297,12 @@ th{font-weight:400;color:var(--muted);font-size:13px}
 .qr-box #qrImg{width:220px;height:220px;display:flex;align-items:center;justify-content:center}
 .qr-box #qrImg img,.qr-box #qrImg canvas{width:220px;height:220px}
 .qr-box .note{color:#5A4F44;text-align:center}
+.log h3 small{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
+.log ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.log li{font-size:14px;border-left:3px solid var(--line);padding:2px 0 2px 10px}
+.log li:first-child{border-left-color:var(--blue)}
+.log li b{display:block}
+.log li span{display:block;color:var(--muted);font-size:13px}
 .bk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:6px;border-top:1px dashed var(--line)}
 .note{font-size:13px;color:var(--muted);margin:0}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:6px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
@@ -548,6 +554,16 @@ th{font-weight:400;color:var(--muted);font-size:13px}
       <h3>範例資料</h3>
       <p class="note">現在還有範例資料。記第一筆真的帳時會自動清除，也可以現在手動清除。</p>
       <button type="button" class="btn2 danger" id="clearDemo2">清除範例資料</button>
+    </section>
+
+    <section class="card set-sec log">
+      <h3>更新日誌<small>目前版本：版本 4</small></h3>
+      <ol>
+        <li><b>版本 4（2026/10/30）</b><span>新增：設定頁最下方的更新日誌，可以確認自己用的是不是最新版。</span></li>
+        <li><b>版本 3（2026/10/30）</b><span>修復：打開記帳本、或從別的 App 切回來時會自動同步，拿回其他裝置記的帳；同步時顯示「同步中…」。</span></li>
+        <li><b>版本 2（2026/10/30）</b><span>新增：新裝置設定 QR code 和連結，新裝置掃描後自動填好同步網址和密碼。新裝置拿到資料時自動清除範例。</span></li>
+        <li><b>版本 1（2026/10/30）</b><span>第一版上線：日曆記帳、一次選多天、金額可打算式、圓餅圖收支分析（本月／半年／一年／自訂）、分類編輯、固定收支、每月預算、搜尋、備份下載與匯入、CSV 匯出、Google 試算表同步（含同步密碼）、離線打開與加入主畫面。</span></li>
+      </ol>
     </section>
   </div>
 </div>
