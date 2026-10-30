@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="手帳記帳本">
@@ -46,7 +46,8 @@
 }
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+html{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;padding:0;touch-action:pan-x pan-y;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
 img{max-width:100%}
 [hidden]:not([hidden=until-found i]){display:none!important}
 button,input{font-family:inherit;color:inherit}
@@ -63,7 +64,7 @@ button{cursor:pointer}
 
 .app{position:relative;z-index:1;max-width:980px;margin:0 auto;
   padding-left:max(16px,env(safe-area-inset-left,0px),calc(var(--spiral) + 6px - max(0px,(100vw - 980px) / 2)));
-  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px),calc(var(--spiral) + 6px - max(0px,(100vw - 980px) / 2)));
   padding-block:clamp(16px,calc(0.3226 * min(max(100vw, 55.9vh), 480px) - 6px),145px) 185px;
   display:flex;flex-direction:column;gap:14px}
 
@@ -140,7 +141,7 @@ button{cursor:pointer}
 .rchip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--card);font-weight:700}
 .range{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .range label{display:flex;flex-direction:column;font-size:13px;color:var(--muted);gap:2px;min-width:0}
-.range input{height:40px;border:1.5px solid var(--ink);border-radius:4px;padding:0 6px;background:var(--card);color:var(--ink);font-size:15px;width:100%}
+.range input{height:40px;border:1.5px solid var(--ink);border-radius:4px;padding:0 6px;background:var(--card);color:var(--ink);font-size:16px;width:100%}
 .ratio{display:flex;justify-content:space-between;align-items:baseline}
 .ratio b{font-size:24px;color:var(--red)}
 .bar{height:14px;border:1.5px solid var(--ink);border-radius:3px;background:var(--card);overflow:hidden}
@@ -225,7 +226,7 @@ th{font-weight:400;color:var(--muted);font-size:13px}
 .catlist button{width:34px;height:34px;border:none;background:transparent;border-radius:50%;color:var(--red);display:flex;align-items:center;justify-content:center}
 .catlist button:disabled{color:var(--line);cursor:not-allowed}
 .addrow{display:flex;gap:8px}
-.addrow input{flex:1 1 auto;min-width:0;height:40px;border:1.5px solid var(--ink);border-radius:4px;padding:0 10px;font-size:15px;background:var(--card);color:var(--ink)}
+.addrow input{flex:1 1 auto;min-width:0;height:40px;border:1.5px solid var(--ink);border-radius:4px;padding:0 10px;font-size:16px;background:var(--card);color:var(--ink)}
 .dhead{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
 .mnav{display:flex;align-items:center;gap:2px;font-size:15px;color:var(--ink)}
 .mnav .icon-btn{width:36px;height:36px}
@@ -288,9 +289,13 @@ th{font-weight:400;color:var(--muted);font-size:13px}
 .mini.armed{border-color:var(--red);background:var(--red);color:var(--card)}
 .rule-form{border:1.5px dashed var(--ink);border-radius:6px;background:var(--paper);padding:10px;display:flex;flex-direction:column;gap:10px}
 .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:40px;padding:0 14px;border:1.5px solid var(--ink);border-radius:20px;background:var(--card);color:var(--ink);font-size:15px;font-family:inherit;cursor:pointer}
+.chip[aria-pressed="true"].i{background:var(--blue);border-color:var(--blue);color:var(--card);font-weight:700}
+.chip[aria-pressed="true"].i::before{content:"✓ "}
 .fld select{height:42px;border:1.5px solid var(--ink);border-radius:4px;padding:0 8px;font-size:16px;background:var(--card);color:var(--ink);width:100%;font-family:inherit}
 .bud-list li{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dotted var(--line);font-size:14px}
-.bud-list input{height:38px;border:1.5px solid var(--line);border-radius:4px;padding:0 8px;font-size:15px;background:var(--card);color:var(--ink);width:100%;text-align:right;font-family:inherit}
+.bud-list input{height:38px;border:1.5px solid var(--line);border-radius:4px;padding:0 8px;font-size:16px;background:var(--card);color:var(--ink);width:100%;text-align:right;font-family:inherit}
 .pw{display:flex;gap:6px}.pw input{flex:1 1 auto;min-width:0}
 .sbox{height:48px;border:2px solid var(--ink);border-radius:6px;padding:0 12px;font-size:17px;background:var(--card);color:var(--ink);width:100%;font-family:inherit}
 .qres{padding:4px 12px}
@@ -323,6 +328,19 @@ td.neg{color:var(--red)}
 .bk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:6px;border-top:1px dashed var(--line)}
 .note{font-size:13px;color:var(--muted);margin:0}
 .toast{display:flex;align-items:center;gap:12px;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:6px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+
+/* 手機窄螢幕：版面置中後內容變窄，縮小間距讓標題與月曆數字不被擠壓 */
+@media (max-width:480px){
+  .top{gap:0;padding:4px 2px}
+  .top .icon-btn{width:38px}
+  .mtitle{flex:1 1 auto;min-width:0}
+  .mtitle h1{font-size:20px;letter-spacing:0;white-space:nowrap}
+  .sync{white-space:nowrap;padding:0 4px}
+  .cal{padding:8px 2px 6px}
+  .cell .e,.cell .i{font-size:9.5px;letter-spacing:-.4px}
+}
+@media (max-width:374px){.cell .e,.cell .i{font-size:8.5px;letter-spacing:-.5px}}
+
 </style>
 </head>
 <body>
@@ -452,7 +470,7 @@ td.neg{color:var(--red)}
     </div>
     <label class="fld" for="fItem">內容（選填，選舊項目自動帶出金額與上次分類）<input id="fItem" type="text" list="itemList" autocomplete="off" placeholder="例如：午餐、小提琴課"></label>
     <datalist id="itemList"></datalist>
-    <div class="fld" id="payRow"><span>付款方式（選填，再點一次取消）</span><div class="chips" id="fPay"></div></div>
+    <label class="fld" id="payRow" for="fPay">付款方式（選填）<select id="fPay"></select></label>
     <div class="fld" id="unpaidRow" hidden><span>收款狀態</span><div class="chips"><button type="button" class="chip i" id="fUnpaid" aria-pressed="false">還沒收到錢（未收款）</button></div></div>
 
     <div class="fld">
@@ -584,8 +602,9 @@ td.neg{color:var(--red)}
     </section>
 
     <section class="card set-sec log">
-      <h3>更新日誌<small>目前版本：版本 5</small></h3>
+      <h3>更新日誌<small>目前版本：版本 6</small></h3>
       <ol>
+        <li><b>版本 6（2026/10/30）</b><span>修復：付款方式改成下拉選單，點開自己選；「未收款」按下去會變藍色打勾；手機上版面置中，不再偏右；鎖定網頁縮放，手指不小心拉大也不會變大，輸入框點進去也不會自動放大。</span></li>
         <li><b>版本 5（2026/10/30）</b><span>新增：記錯可以按「復原」；收入可標記「未收款」，主畫面列出還沒收到的錢；收支報表（整年或自訂日期）；付款方式；修改時可「用這筆內容再記一次」。修復：同步失敗會一直顯示紅字，點一下就重試；有同步時不再跳備份提醒。</span></li>
         <li><b>版本 4（2026/10/30）</b><span>新增：設定頁最下方的更新日誌，可以確認自己用的是不是最新版。</span></li>
         <li><b>版本 3（2026/10/30）</b><span>修復：打開記帳本、或從別的 App 切回來時會自動同步，拿回其他裝置記的帳；同步時顯示「同步中…」。</span></li>
@@ -957,7 +976,7 @@ function dateSummary(){
 }
 function renderPayUnpaid(){
   $('payRow').hidden=fType!=='exp';$('unpaidRow').hidden=fType!=='inc';
-  $('fPay').innerHTML=PAYS.map(p=>'<button type="button" class="chip e" data-p="'+p+'" aria-pressed="'+(p===fPay)+'">'+p+'</button>').join('');
+  $('fPay').innerHTML='<option value="">（不填）</option>'+PAYS.map(p=>'<option value="'+p+'">'+p+'</option>').join('');$('fPay').value=fPay;
   $('fUnpaid').setAttribute('aria-pressed',fUnpaid);
 }
 function renderForm(){
@@ -1016,7 +1035,7 @@ function commitRecord(cat){
   toast(msg+budgetWarn(ft,useCat,first),{label:'復原',fn:doUndo});
 }
 
-$('fPay').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;fPay=fPay===b.dataset.p?'':b.dataset.p;renderPayUnpaid();};
+$('fPay').onchange=()=>{fPay=$('fPay').value;};
 $('fUnpaid').onclick=()=>{fUnpaid=!fUnpaid;renderPayUnpaid();};
 $('againBtn').onclick=()=>{
   if(!editing)return;const t=editing.type,c=editing.cat;
@@ -1464,6 +1483,13 @@ document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&db.url&&Date.now()-lastPull>30000){lastPull=Date.now();sync(true);}
 });
 window.addEventListener('pageshow',e=>{if(e.persisted&&db.url){lastPull=Date.now();sync(true);}});
+})();
+</script>
+<script>
+/* 鎖定縮放：iPhone Safari 會忽略 user-scalable=no，另外擋雙指縮放（連點兩下放大由 CSS touch-action 擋） */
+(function(){
+  ["gesturestart","gesturechange","gestureend"].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault();},{passive:false});});
+  document.addEventListener("touchmove",function(e){if(e.touches.length>1)e.preventDefault();},{passive:false});
 })();
 </script>
 </body>
