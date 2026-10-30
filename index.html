@@ -293,6 +293,10 @@ th{font-weight:400;color:var(--muted);font-size:13px}
 .sbox{height:48px;border:2px solid var(--ink);border-radius:6px;padding:0 12px;font-size:17px;background:var(--card);color:var(--ink);width:100%;font-family:inherit}
 .qres{padding:4px 12px}
 .qres .dt{font-size:12px;color:var(--muted);display:block}
+.qr-box{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;border:1.5px dashed var(--ink);border-radius:6px;background:#FFFFFF}
+.qr-box #qrImg{width:220px;height:220px;display:flex;align-items:center;justify-content:center}
+.qr-box #qrImg img,.qr-box #qrImg canvas{width:220px;height:220px}
+.qr-box .note{color:#5A4F44;text-align:center}
 .bk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:6px;border-top:1px dashed var(--line)}
 .note{font-size:13px;color:var(--muted);margin:0}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:8px 16px;border-radius:6px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
@@ -498,6 +502,18 @@ th{font-weight:400;color:var(--muted);font-size:13px}
       <p class="note" id="setStatus"></p>
       <button type="button" class="save" id="syncNow">儲存並立即同步</button>
       <p class="note">在 Claude 的預覽頁面裡無法連線同步；放上 GitHub 之後才會生效。</p>
+    </section>
+
+    <section class="card set-sec">
+      <h3>新裝置設定</h3>
+      <p class="note">在已經設定好同步的裝置上按下面的按鈕，再用新裝置的相機掃 QR code（或打開連結），新裝置就會自動填好同步網址和密碼。</p>
+      <button type="button" class="btn2" id="qrBtn">產生新裝置設定 QR code</button>
+      <div class="qr-box" id="qrBox" hidden>
+        <div id="qrImg" aria-label="新裝置設定 QR code"></div>
+        <p class="note">用新裝置的相機掃描，或把連結傳到新裝置打開</p>
+        <div class="bk-row" style="width:100%"><button type="button" class="btn2" id="qrCopy">複製連結</button><button type="button" class="btn2" id="qrHide">收起</button></div>
+        <p class="note" style="color:#B8452F">這個 QR code 和連結裡有你的同步密碼，只給自己的裝置用，不要傳給別人。</p>
+      </div>
     </section>
 
     <section class="card set-sec">
@@ -766,6 +782,7 @@ async function sync(quiet){
     const data=await res.json();
     if(data&&data.error==='bad_key'){if(!quiet)toast('同步密碼不對，請到設定裡確認');return;}
     if(!data||!Array.isArray(data.records))throw new Error('bad');
+    if(data.records.length&&db.records.some(r=>r.demo))db.records=db.records.filter(r=>!r.demo);
     const map={};db.records.forEach(r=>map[r.id]=r);
     sent.forEach(s=>{const r=map[s.id];if(r&&r.updated===s.updated)r.synced=true;});
     data.records.forEach(x=>{x.amount=+x.amount;x.updated=+x.updated;x.deleted=x.deleted===true||x.deleted==='TRUE'||x.deleted==='true';const l=map[x.id];if(!l||(l.synced&&x.updated>=l.updated)){x.synced=true;if(l)Object.assign(l,x);else{db.records.push(x);map[x.id]=x;}}});
@@ -1204,7 +1221,48 @@ if('serviceWorker' in navigator&&/github\.io$/.test(location.hostname)){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
 }
 
-load();render();if(db.url&&pending().length)sync(true);
+/* ---------- 新裝置設定：QR code / 連結 ---------- */
+const SITE='https://qwe0975169776-dotcom.github.io/ledger/';
+function setupLink(){
+  const base=/github\.io$/.test(location.hostname)?location.origin+location.pathname:SITE;
+  const payload=btoa(unescape(encodeURIComponent(JSON.stringify({u:db.url,k:db.key||''}))));
+  return base+'#setup='+encodeURIComponent(payload);
+}
+function loadQRLib(){
+  return new Promise((ok,no)=>{
+    if(window.QRCode)return ok();
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    sc.onload=()=>ok();sc.onerror=()=>no();document.head.appendChild(sc);
+  });
+}
+$('qrBtn').onclick=async()=>{
+  if(!db.url||!db.key){toast('這台裝置還沒設定好同步，先在上面填好網址和密碼');return;}
+  const link=setupLink();$('qrBox').hidden=false;$('qrImg').innerHTML='產生中…';
+  try{await loadQRLib();$('qrImg').innerHTML='';new QRCode($('qrImg'),{text:link,width:220,height:220,colorDark:'#000000',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.L});}
+  catch(e){$('qrImg').textContent='沒有網路，無法產生 QR code，請用「複製連結」';}
+};
+$('qrHide').onclick=()=>{$('qrBox').hidden=true;$('qrImg').innerHTML='';};
+$('qrCopy').onclick=()=>{
+  const link=setupLink();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(()=>toast('已複製連結，傳到你的新裝置打開'),()=>toast('無法自動複製，請改用 QR code'));}
+  else toast('無法自動複製，請改用 QR code');
+};
+function applySetupFromHash(){
+  const m=location.hash.match(/^#setup=(.+)$/);if(!m)return false;
+  try{
+    const o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
+    if(o&&/^https:\/\/script\.google\.com\//.test(o.u)){db.url=o.u;db.key=o.k||'';db.records=db.records.filter(r=>!r.demo);save();}
+  }catch(e){}
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  return !!db.url;
+}
+
+load();
+const fromSetup=applySetupFromHash();
+render();
+if(fromSetup){toast('已自動完成同步設定，正在同步…');sync(true).then(()=>toast('同步完成'));}
+else if(db.url&&pending().length)sync(true);
 })();
 </script>
 </body>
