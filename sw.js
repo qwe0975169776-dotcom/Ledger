@@ -1,5 +1,5 @@
 // 手帳記帳本：讓網頁在沒有網路時也能打開
-const CACHE = 'ledger-notebook-v2';
+const CACHE = 'ledger-notebook-v3';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

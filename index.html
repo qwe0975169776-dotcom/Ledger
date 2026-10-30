@@ -763,6 +763,7 @@ $('topList').onclick=e=>{const li=e.target.closest('li[data-id]');if(li){const r
 function pending(){return db.records.filter(r=>!r.synced&&!r.demo);}
 function renderSync(){
   const n=pending().length,b=$('syncBtn');b.classList.remove('pending','ok');
+  if(syncing){$('syncText').textContent='同步中…';return;}
   if(n){b.classList.add('pending');$('syncText').textContent=(navigator.onLine?'':'離線記錄・')+n+' 筆待同步';}
   else if(db.url&&db.lastSync){b.classList.add('ok');const t=new Date(db.lastSync);$('syncText').textContent='已同步 '+(t.getMonth()+1)+'/'+t.getDate()+' '+pad(t.getHours())+':'+pad(t.getMinutes());}
   else $('syncText').textContent=db.url?'尚未同步':'尚未設定同步';
@@ -775,7 +776,7 @@ async function sync(quiet){
   if(!db.url){if(!quiet)openSettings();return;}
   if(syncing)return;
   if(!navigator.onLine){if(!quiet)toast('目前沒有網路，記錄先存在這台裝置上');return;}
-  syncing=true;
+  syncing=true;renderSync();
   const sent=pending().map(r=>({id:r.id,updated:r.updated}));
   try{
     const res=await fetch(db.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'sync',key:db.key||'',records:pending().map(clean),settings:settingsObj(),settingsUpdated:db.setUpdated})});
@@ -1262,7 +1263,13 @@ load();
 const fromSetup=applySetupFromHash();
 render();
 if(fromSetup){toast('已自動完成同步設定，正在同步…');sync(true).then(()=>toast('同步完成'));}
-else if(db.url&&pending().length)sync(true);
+else if(db.url)sync(true);
+/* 從別的 App 切回來時，自動抓其他裝置記的帳（30 秒內不重複） */
+let lastPull=Date.now();
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&db.url&&Date.now()-lastPull>30000){lastPull=Date.now();sync(true);}
+});
+window.addEventListener('pageshow',e=>{if(e.persisted&&db.url){lastPull=Date.now();sync(true);}});
 })();
 </script>
 </body>
