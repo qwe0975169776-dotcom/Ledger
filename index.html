@@ -602,8 +602,9 @@ td.neg{color:var(--red)}
     </section>
 
     <section class="card set-sec log">
-      <h3>更新日誌<small>目前版本：版本 6</small></h3>
+      <h3>更新日誌<small>目前版本：版本 7</small></h3>
       <ol>
+        <li><b>版本 7（2026/11/02）</b><span>修復：按「記一筆」後，游標會直接進到金額欄，手機鍵盤會立刻跳出來，可以馬上打數字。</span></li>
         <li><b>版本 6（2026/10/30）</b><span>修復：付款方式改成下拉選單，點開自己選；「未收款」按下去會變藍色打勾；手機上版面置中，不再偏右；鎖定網頁縮放，手指不小心拉大也不會變大，輸入框點進去也不會自動放大。</span></li>
         <li><b>版本 5（2026/10/30）</b><span>新增：記錯可以按「復原」；收入可標記「未收款」，主畫面列出還沒收到的錢；收支報表（整年或自訂日期）；付款方式；修改時可「用這筆內容再記一次」。修復：同步失敗會一直顯示紅字，點一下就重試；有同步時不再跳備份提醒。</span></li>
         <li><b>版本 4（2026/10/30）</b><span>新增：設定頁最下方的更新日誌，可以確認自己用的是不是最新版。</span></li>
@@ -955,7 +956,10 @@ function openForm(rec){
   $('err').textContent='';showCatEdit(false);showCal(false);updateCalcUI();
   $('itemList').innerHTML=[...new Set(live().filter(r=>!r.demo).concat(live()).map(title).filter(Boolean))].slice(-60).map(n=>'<option value="'+esc(n)+'"></option>').join('');
   $('sheetWrap').hidden=false;document.body.style.overflow='hidden';
-  renderForm();setTimeout(()=>$('fAmt').focus(),60);
+  renderForm();
+  /* 新增：手指按下的當下立刻對焦，手機才會跳出鍵盤（延遲對焦會被手機擋掉）；修改舊記錄維持原本做法 */
+  if(rec)setTimeout(()=>$('fAmt').focus(),60);
+  else{try{$('fAmt').focus({preventScroll:true});}catch(e){$('fAmt').focus();}}
 }
 function closeForm(){$('sheetWrap').hidden=true;document.body.style.overflow=(!$('searchWrap').hidden||!$('setWrap').hidden||!$('yearWrap').hidden)?'hidden':'';}
 function renderCats(){
